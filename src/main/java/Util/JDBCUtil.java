@@ -10,27 +10,24 @@ import java.time.LocalDateTime;
 
 public class JDBCUtil {
 
-	public static Connection getConnection() {
-		Connection conn = null;
-		try {
+	private static String jdbcURL = "jdbc:mysql://localhost:3306/qldvsv";
+    private static String jdbcUsername = "root";
+    private static String jdbcPassword = "123456";
 
-			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-
-			String url = System.getenv("DB_URL");
-			String username = System.getenv("DB_USERNAME");
-			String password = System.getenv("DB_PASSWORD");
-
-			conn = DriverManager.getConnection(url, username, password);
-
-			System.out.println("Connection Successfully");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Connection error");
-			e.printStackTrace();
-		}
-
-		return conn;
-	}
+    public static Connection getConnection() {
+        Connection connection = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return connection;
+    }
 
 	public static void closeConnection(Connection conn) {
 		try {
