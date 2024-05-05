@@ -93,7 +93,8 @@
 	    </nav>
 	</div>
 	
-    <form action="<%=request.getContextPath()%>/login/in" method="post"  style="">
+    <form action="<%=request.getContextPath()%>/login" method="post"  style="">
+    <input type= "hidden" name="action" value = "/in" />
         <div class="container">       
             <h1>Đăng nhập</h1>
             <hr style="margin: 3px">
