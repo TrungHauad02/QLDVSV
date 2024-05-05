@@ -100,11 +100,9 @@
 	        </ul>
 	    </nav>
 	</div>
-	
     <form action="<%=request.getContextPath()%>/login/in" method="post"  style="">	
     			<input type="hidden" name="csrf_token" value="<%= session.getAttribute("csrf_token") %>">
-
-
+    			<input type= "hidden" name="action" value = "/in" />
         <div class="container">       
             <h1>Đăng nhập</h1>
             <hr style="margin: 3px">
