@@ -23,7 +23,7 @@ public class HeaderFilter implements Filter {//...
 	{
 	    HttpServletResponse httpServletResponse = ((HttpServletResponse) response);
 	    httpServletResponse.addHeader("X-Frame-Options", "DENY");
-//	    httpServletResponse.addHeader("X-Content-Type-Options", "nosniff");
+	    httpServletResponse.addHeader("X-Content-Type-Options", "nosniff");
 
 	    chain.doFilter(request, response);
 	}
