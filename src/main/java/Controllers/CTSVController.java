@@ -200,11 +200,15 @@ public class CTSVController extends HttpServlet {
 		    throws SQLException, ServletException, IOException {
 				HttpSession session = request.getSession();
 				TaiKhoan acc = (TaiKhoan)session.getAttribute("Acc");
+				if(acc == null)
+					response.sendRedirect(request.getContextPath() + "/pages/errorPage.jsp");
+				else {
 				String idTk = acc.getIdTk();
 		        CTSV ctsv = ctsvDAO.selectCTSV_IDTK(idTk);
 		        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages_CTSV/TTCaNhanCTSV.jsp");
 		        request.setAttribute("ttCTSV", ctsv);
 		        dispatcher.forward(request, response);
+				}
 		    }
 	
 	private void UpdateContactInfo(HttpServletRequest request, HttpServletResponse response)

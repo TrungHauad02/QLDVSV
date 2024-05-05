@@ -7,6 +7,11 @@
 	</div>
 	<div class="button-container">
 	    <nav class="navbar navbar-expand-md navbar-dark" style="background-color: #00558c">
+	    		<input type="hidden" name="csrf_token"
+		    		<c:if test="${csrf_token !=null}">
+		    				value="${csrf_token}"
+		    		</c:if>
+	    		>	
 	        <ul class="navbar-nav navbar-collapse justify-content-end">
 	            <li><a href="MainPage.jsp" class="nav-link">Trang chủ</a></li>
 	            <li><a href="MainPage.jsp" class="nav-link">Đăng xuất</a></li>

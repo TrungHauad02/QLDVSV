@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import DAO.*;
 import Models.SinhVien;
 import Models.TaiKhoan;
+import Util.CSRFTokenUtil;
 
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
@@ -40,20 +41,29 @@ public class LoginController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String action = request.getPathInfo();
-
-		request.setCharacterEncoding("UTF-8");
-        try {
-            switch (action) {
-                case "/in":
-                	login(request, response);
-                    break;  
-                
-            }
-        } catch (SQLException ex) {
-            throw new ServletException(ex);
-        } catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(action!=null)
+			{
+			request.setCharacterEncoding("UTF-8");
+		        try {
+		            switch (action) {
+		                case "/in":
+		                	login(request, response);
+		                    break;  
+		                case "/createCSRF":
+		                	getCSRFtoken(request, response);
+		    				break;
+		    			
+		            }
+		        } catch (SQLException ex) {
+		            throw new ServletException(ex);
+		        } catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		else
+		{
+			response.sendRedirect(request.getContextPath() + "/pages/errorPage.jsp");
 		}
 
 	}
@@ -62,16 +72,25 @@ public class LoginController extends HttpServlet {
 			throws ServletException, IOException {
 		doGet(request, response);
 	}
-	
+	private void getCSRFtoken(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	HttpSession session = request.getSession();
+        String csrfToken = (String) session.getAttribute("csrf_token");
+        if (csrfToken == null) {
+            csrfToken = CSRFTokenUtil.generateCSRFToken(request);
+            session.setAttribute("csrf_token", csrfToken);
+        }
+
+        request.setAttribute("csrf_token", csrfToken);
+    }
 	private void login(HttpServletRequest request, HttpServletResponse response)
 		    throws SQLException, ServletException, IOException, ParseException {
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		String roleSelect= request.getParameter("role");
+		String username =request.getParameter("username");
+		String password =request.getParameter("password");
+		String roleSelect=request.getParameter("role");
 		TaiKhoan account = new TaiKhoan();
-		account.setTenTk(username);
 		account.setMatkhau(password);
-
+		account.setTenTk(username);
+		
 		try {
 			TaiKhoan acc =new TaiKhoan();
 			acc =loginDAO.onLogin(account);
@@ -82,7 +101,7 @@ public class LoginController extends HttpServlet {
 	            	{
 	            		truycapDAO.insertTruyCap(acc.getIdTk());
 	            		HttpSession session = request.getSession();
-	                    session.setAttribute("Acc", acc);   
+	                    session.setAttribute("Acc", acc); 
 	                    if (roleSelect.equals("qtv")) {
 	                        response.sendRedirect(request.getContextPath()+"/Qtv/listSV");
 	                    } else if (roleSelect.equals("ctsv")) {

@@ -101,6 +101,9 @@
 	</div>
 	
     <form action="<%= request.getContextPath()%>/QuenMK" method="post"  style="">
+    	<input type="hidden" name="csrf_token"	    		
+		    				value="${csrf_token}"
+	    		>
          <div class="container">
 	        <h1>Quên mật khẩu</h1>
 	
@@ -156,7 +159,7 @@
 </body>
 </html>
 
- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function () {
             $('input[type="radio"]').change(function () {

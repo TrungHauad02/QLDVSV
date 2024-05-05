@@ -15,8 +15,6 @@ public class LoginDAO {
 			+ "WHERE id_Tk = ? ;\r\n";
     public TaiKhoan onLogin(TaiKhoan Acc) throws ClassNotFoundException {
     	TaiKhoan  acc = new TaiKhoan();
-        
-
         try (Connection connection = JDBCUtil.getConnection();
                 PreparedStatement preparedStatement = connection
                         .prepareStatement("select * from TaiKhoan where TenTk = ? and MatKhau = ? ")) {
@@ -40,7 +38,6 @@ public class LoginDAO {
         }
         return acc;
     }
-    
 	public void upDate_MK(String idTK ,String newMK) {
 	        
 	        // Step 1: Establishing a Connection

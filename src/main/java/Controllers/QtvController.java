@@ -43,6 +43,7 @@ import Models.SinhVien;
 import Models.TaiKhoan;
 import Models.ThongBao;
 import Models.TruyCap;
+import Util.CSRFTokenUtil;
 import Util.EmailUtility;
 import DAO.*;
 
@@ -196,6 +197,9 @@ public class QtvController extends HttpServlet {
     throws SQLException, ServletException, IOException {
 		HttpSession session = request.getSession();
 		TaiKhoan acc = (TaiKhoan)session.getAttribute("Acc");
+		if(acc == null)
+			response.sendRedirect(request.getContextPath() + "/pages/errorPage.jsp");
+		else {
 		String idTk= acc.getIdTk();
         QTV qtv = qtvDAO.selectQTV(idTk);
         String errMsgString = (String)request.getAttribute("errMsg");
@@ -204,7 +208,7 @@ public class QtvController extends HttpServlet {
         RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/TTCaNhanQTV.jsp");
         request.setAttribute("errMsgg", errMsgString);
         request.setAttribute("ttQTV", qtv);
-        dispatcher.forward(request, response);
+        dispatcher.forward(request, response);}
     }
 	
 	private void update_TT(HttpServletRequest request, HttpServletResponse response)
@@ -466,30 +470,37 @@ public class QtvController extends HttpServlet {
 	
 	private void insert_CTSV(HttpServletRequest request, HttpServletResponse response)
     throws SQLException, ServletException, IOException, ParseException {
-		String TrangThai=request.getParameter("trangthai");
-		String HoTen=request.getParameter("hoten");
-		String ngaysinh = request.getParameter("ngaysinh");
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		java.sql.Date ngaySinh = new java.sql.Date(dateFormat.parse(ngaysinh).getTime());
-		
-		String GioiTinh=request.getParameter("gioitinh");
-		String DiaChi=request.getParameter("diachi");
-		String QueQuan=request.getParameter("quequan");
-		String SoDienThoai=request.getParameter("sodienthoai");
-		String Email=request.getParameter("email");
-		String mactsv=ctsvDAO.insertCTSV( TrangThai, HoTen, ngaySinh, GioiTinh, DiaChi, QueQuan, SoDienThoai, Email);
-		request.setAttribute("errMsg", "Bạn đã thêm CTSV thành công  "); 
-		try {
-			String tieuDe="Tai khoản sinh viên của bạn đã được tạo";
-			String noiDung="Tên tài khoản : ctsv"+mactsv + " \n Mật khẩu : 123";
-			sendemail(request,response,tieuDe,noiDung,Email);
-		} catch (SQLException | ServletException | IOException | ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(CSRFTokenUtil.validateCSRFToken(request))
+				{String TrangThai=request.getParameter("trangthai");
+				String HoTen=request.getParameter("hoten");
+				String ngaysinh = request.getParameter("ngaysinh");
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				java.sql.Date ngaySinh = new java.sql.Date(dateFormat.parse(ngaysinh).getTime());
+				
+				String GioiTinh=request.getParameter("gioitinh");
+				String DiaChi=request.getParameter("diachi");
+				String QueQuan=request.getParameter("quequan");
+				String SoDienThoai=request.getParameter("sodienthoai");
+				String Email=request.getParameter("email");
+				String mactsv=ctsvDAO.insertCTSV( TrangThai, HoTen, ngaySinh, GioiTinh, DiaChi, QueQuan, SoDienThoai, Email);
+				request.setAttribute("errMsg", "Bạn đã thêm CTSV thành công  "); 
+				try {
+					String tieuDe="Tai khoản sinh viên của bạn đã được tạo";
+					String noiDung="Tên tài khoản : ctsv"+mactsv + " \n Mật khẩu : 123";
+					sendemail(request,response,tieuDe,noiDung,Email);
+				} catch (SQLException | ServletException | IOException | ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		        RequestDispatcher dispatcher = request.getRequestDispatcher("/Qtv/showtt_CTSV?id="+mactsv);
+		        dispatcher.forward(request, response);
 		}
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/Qtv/showtt_CTSV?id="+mactsv);
-        dispatcher.forward(request, response);
-		
+		else 
+		{
+		    // Nếu token không hợp lệ, chuyển hướng đến trang lỗi
+			response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid CSRF Token.");
+			return;
+		}
     }
 	
 	private void listKhoa(HttpServletRequest request, HttpServletResponse response)

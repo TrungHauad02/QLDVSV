@@ -53,6 +53,7 @@
 	    <c:if test="${CTSV == null}">
 	     	<form id="myForm" action="<%=request.getContextPath()%>/Qtv/insert_CTSV" method="post">
 	    </c:if>
+	    		<input type="hidden" name="csrf_token" value="<%= session.getAttribute("csrf_token") %>">
 	            <div style="width: 100%; max-height: 40%"  class ="tables-container">
 	                <div class="form-row" style="width: 99%">
 	                    <div class="column">
