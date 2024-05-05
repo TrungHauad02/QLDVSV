@@ -8,6 +8,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import DAO.*;
 import Models.SinhVien;
 import Models.TaiKhoan;
+import SameSiteCookie.SamesiteHttpServletResponse;
 
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
@@ -39,7 +41,12 @@ public class LoginController extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String action = request.getPathInfo();
+		SamesiteHttpServletResponse wrappedResponse = new SamesiteHttpServletResponse(response);
+		Cookie[] cookies = request.getCookies();
+		for (Cookie cookie : cookies) {
+			 wrappedResponse.addCookie(cookie);
+		}
+		String action = request.getParameter("action");
 
 		request.setCharacterEncoding("UTF-8");
         try {
