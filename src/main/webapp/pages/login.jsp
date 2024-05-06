@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 
  <%@ page import="Models.TaiKhoan"%>
+ <%@ page import="SameSiteCookie.SamesiteHttpServletResponse"%>
  
 <!DOCTYPE html>
 <html lang="vi">
@@ -82,6 +83,15 @@
   </style>
 </head>
 <body>
+	<%
+		SamesiteHttpServletResponse wrappedResponse = new SamesiteHttpServletResponse(response);
+		Cookie[] cookies = request.getCookies();
+		if(cookies != null) {
+			for (Cookie cookie : cookies) {
+				 wrappedResponse.addCookie(cookie);
+			}
+		}
+	%>
     <div class="image-container">
         <img border="0" src="${pageContext.request.contextPath}/img/SPKT.jpg">
     </div>
