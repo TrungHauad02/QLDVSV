@@ -7,6 +7,16 @@
  
  
 
+	<%@ page import="SameSiteCookie.SamesiteHttpServletResponse"%>
+	<%
+		SamesiteHttpServletResponse wrappedResponse = new SamesiteHttpServletResponse(response);
+		Cookie[] cookies = request.getCookies();
+		if(cookies != null) {
+			for (Cookie cookie : cookies) {
+				 wrappedResponse.addCookie(cookie);
+			}
+		}
+	%>
 
 <!DOCTYPE html>
 <html lang="vi">
