@@ -6,6 +6,16 @@
  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
  
  
+	<%@ page import="SameSiteCookie.SamesiteHttpServletResponse"%>
+	<%
+		SamesiteHttpServletResponse wrappedResponse = new SamesiteHttpServletResponse(response);
+		Cookie[] cookies = request.getCookies();
+		if(cookies != null) {
+			for (Cookie cookie : cookies) {
+				 wrappedResponse.addCookie(cookie);
+			}
+		}
+	%>
 
 
 <!DOCTYPE html>
@@ -101,6 +111,9 @@
 	</div>
 	
     <form action="<%= request.getContextPath()%>/QuenMK" method="post"  style="">
+    	<input type="hidden" name="csrf_token"	    		
+		    				value="${csrf_token}"
+	    		>
          <div class="container">
 	        <h1>Quên mật khẩu</h1>
 	
@@ -156,7 +169,7 @@
 </body>
 </html>
 
- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function () {
             $('input[type="radio"]').change(function () {

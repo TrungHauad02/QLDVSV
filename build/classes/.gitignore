@@ -1,6 +1,8 @@
-/Controllers/
+/CSPFilters/
 /HeaderFilters/
+
+/Controllers/
+/SameSiteCookie/
 /DAO/
 /Models/
-/SameSiteCookie/
-/Util/
+

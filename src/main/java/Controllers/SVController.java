@@ -16,6 +16,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,6 +36,7 @@ import Models.LyDo;
 import Models.CTXH;
 import Models.DKCTXH;
 import Models.ThongBao;
+import SameSiteCookie.SamesiteHttpServletResponse;
 import DAO.*;
 
 /**
@@ -83,9 +85,18 @@ public class SVController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		SamesiteHttpServletResponse wrappedResponse = new SamesiteHttpServletResponse(response);
+		Cookie[] cookies = request.getCookies();
+		if(cookies != null) {
+			for (Cookie cookie : cookies) {
+				 wrappedResponse.addCookie(cookie);
+			}
+		}
 		String action = request.getPathInfo();
-
-		request.setCharacterEncoding("UTF-8");
+		if(action!=null)
+		{
+			request.setCharacterEncoding("UTF-8");
+		
         try {
             switch (action) {
                 case "/info":
@@ -190,7 +201,12 @@ public class SVController extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+        
+		}
+		else
+		{
+			response.sendRedirect(request.getContextPath() + "/pages/errorPage.jsp");
+		}
 	       
 	}
 
@@ -207,17 +223,25 @@ public class SVController extends HttpServlet {
 			throws SQLException, ServletException, IOException, ParseException {
 				HttpSession session = request.getSession();
 				TaiKhoan acc = (TaiKhoan)session.getAttribute("Acc");
-				String MSSV= acc.getTenTk();
-				List <LoaiGiay> listLG = loaigiayDAO.selectallLoaiGiay();
-			    request.setAttribute("listLG", listLG);
-			    List <DKGiayXacNhan> listDKGXN = dkgxnDAO.selectDKGXN(MSSV);
-			    request.setAttribute("listDKGXN", listDKGXN);
-			    String status = (String) session.getAttribute("status");
-			    if (status != null) {
-			        session.setAttribute("status", status);
-			    }
-		        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages_SV/TrangDKGXN.jsp");
-		        dispatcher.forward(request, response);
+				if(acc!=null)
+				{
+					String MSSV= acc.getTenTk();
+					List <LoaiGiay> listLG = loaigiayDAO.selectallLoaiGiay();
+				    request.setAttribute("listLG", listLG);
+				    List <DKGiayXacNhan> listDKGXN = dkgxnDAO.selectDKGXN(MSSV);
+				    request.setAttribute("listDKGXN", listDKGXN);
+				    String status = (String) session.getAttribute("status");
+				    if (status != null) {
+				        session.setAttribute("status", status);
+				    }
+			        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages_SV/TrangDKGXN.jsp");
+			        dispatcher.forward(request, response);
+				}
+				else
+				{
+					response.sendRedirect(request.getContextPath() + "/pages/errorPage.jsp");
+				}
+			       
 	}
 	
 	private void insert_dkGXN(HttpServletRequest request, HttpServletResponse response)
@@ -269,22 +293,30 @@ public class SVController extends HttpServlet {
 			throws SQLException, ServletException, IOException, ParseException {
 				HttpSession session = request.getSession();
 				TaiKhoan acc = (TaiKhoan)session.getAttribute("Acc");
-				String MSSV= acc.getTenTk();
-				List <LyDo> listLD = lydoDAO.selectallLyDo();
-			    request.setAttribute("listLD", listLD);
-			    for (LyDo ld : listLD) {
-			        System.out.println(ld.getTenLyDo());
-			    }
-			    List <DKXNNganhNghe> listDKXNNN = dkxnnnDAO.selectDKXNNN(MSSV);
-			    request.setAttribute("listDKXNNN", listDKXNNN);
-			    SinhVien sv = svDAO.selectTT_SV(MSSV);
-			    request.setAttribute("SinhVien", sv);
-			    String status = (String) session.getAttribute("status");
-			    if (status != null) {
-			        session.setAttribute("status", status);
-			    }
-		        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages_SV/TrangDKXNnghe.jsp");
-		        dispatcher.forward(request, response);
+				if(acc!=null)
+				{
+					String MSSV= acc.getTenTk();
+					List <LyDo> listLD = lydoDAO.selectallLyDo();
+				    request.setAttribute("listLD", listLD);
+				    for (LyDo ld : listLD) {
+				        System.out.println(ld.getTenLyDo());
+				    }
+				    List <DKXNNganhNghe> listDKXNNN = dkxnnnDAO.selectDKXNNN(MSSV);
+				    request.setAttribute("listDKXNNN", listDKXNNN);
+				    SinhVien sv = svDAO.selectTT_SV(MSSV);
+				    request.setAttribute("SinhVien", sv);
+				    String status = (String) session.getAttribute("status");
+				    if (status != null) {
+				        session.setAttribute("status", status);
+				    }
+			        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages_SV/TrangDKXNnghe.jsp");
+			        dispatcher.forward(request, response);
+				}
+				else 
+				{
+					response.sendRedirect(request.getContextPath() + "/pages/errorPage.jsp");
+				}
+	
 	}
 	
 	private void insert_dkXNNN(HttpServletRequest request, HttpServletResponse response)
@@ -354,21 +386,28 @@ public class SVController extends HttpServlet {
 			throws SQLException, ServletException, IOException, ParseException {
 				HttpSession session = request.getSession();
 				TaiKhoan acc = (TaiKhoan)session.getAttribute("Acc");
-				String MSSV = acc.getTenTk();
-				SinhVien sv = svDAO.selectTT_SV(MSSV);
-			    request.setAttribute("SinhVien", sv);
-				List <CTXH> listCTXH = ctxhDAO.selectCTXH_TimeHD();
-			    request.setAttribute("listCTXH", listCTXH);
-			    List <DKCTXH> listDKCTXH = dkctxhDAO.selectDKCTXH_MSSV(MSSV);
-			    request.setAttribute("listDKCTXH", listDKCTXH);
-			    String status = (String) session.getAttribute("status");
-			    if (status != null) {
-			        session.setAttribute("status", status);
-			    }
-		        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages_SV/TrangDKCTXH.jsp");
-		        dispatcher.forward(request, response);
-	}
+				if(acc!=null)
+				{
+					String MSSV = acc.getTenTk();
+					SinhVien sv = svDAO.selectTT_SV(MSSV);
+				    request.setAttribute("SinhVien", sv);
+					List <CTXH> listCTXH = ctxhDAO.selectCTXH_TimeHD();
+				    request.setAttribute("listCTXH", listCTXH);
+				    List <DKCTXH> listDKCTXH = dkctxhDAO.selectDKCTXH_MSSV(MSSV);
+				    request.setAttribute("listDKCTXH", listDKCTXH);
+				    String status = (String) session.getAttribute("status");
+				    if (status != null) {
+				        session.setAttribute("status", status);
+				    }
+			        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages_SV/TrangDKCTXH.jsp");
+			        dispatcher.forward(request, response);
 	
+				}
+				else 
+				{
+					response.sendRedirect(request.getContextPath() + "/pages/errorPage.jsp");
+				}
+	}
 	private void insert_dkCTXH(HttpServletRequest request, HttpServletResponse response)
 		    throws SQLException, ServletException, IOException, ParseException {
 				HttpSession session = request.getSession();
