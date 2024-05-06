@@ -44,8 +44,10 @@ public class LoginController extends HttpServlet {
 			throws ServletException, IOException {
 		SamesiteHttpServletResponse wrappedResponse = new SamesiteHttpServletResponse(response);
 		Cookie[] cookies = request.getCookies();
-		for (Cookie cookie : cookies) {
-			 wrappedResponse.addCookie(cookie);
+		if(cookies != null) {
+			for (Cookie cookie : cookies) {
+				 wrappedResponse.addCookie(cookie);
+			}
 		}
 		String action = request.getParameter("action");
 		if(action!=null)

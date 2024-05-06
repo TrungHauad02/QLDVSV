@@ -1,7 +1,7 @@
 package Models;
 
-public class TaiKhoan {
-
+public class TaiKhoan{
+	
 	public TaiKhoan() {
 		// TODO Auto-generated constructor stub
 	}

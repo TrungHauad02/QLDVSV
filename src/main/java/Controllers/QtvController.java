@@ -19,6 +19,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,6 +44,7 @@ import Models.SinhVien;
 import Models.TaiKhoan;
 import Models.ThongBao;
 import Models.TruyCap;
+import SameSiteCookie.SamesiteHttpServletResponse;
 import Util.CSRFTokenUtil;
 import Util.EmailUtility;
 import DAO.*;
@@ -96,6 +98,13 @@ public class QtvController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		SamesiteHttpServletResponse wrappedResponse = new SamesiteHttpServletResponse(response);
+		Cookie[] cookies = request.getCookies();
+		if(cookies != null) {
+			for (Cookie cookie : cookies) {
+				 wrappedResponse.addCookie(cookie);
+			}
+		}
 		String action = request.getPathInfo();
 
 		request.setCharacterEncoding("UTF-8");

@@ -14,6 +14,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +45,7 @@ import Models.TaiKhoan;
 import Models.ThongBao;
 import Models.XacNhanGXN;
 import Models.XacNhanNganhNghe;
+import SameSiteCookie.SamesiteHttpServletResponse;
 import Util.EmailUtility;
 
 
@@ -94,6 +96,13 @@ public class CTSVController extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		SamesiteHttpServletResponse wrappedResponse = new SamesiteHttpServletResponse(response);
+		Cookie[] cookies = request.getCookies();
+		if(cookies != null) {
+			for (Cookie cookie : cookies) {
+				 wrappedResponse.addCookie(cookie);
+			}
+		}
 		String action = request.getPathInfo();
 
 		request.setCharacterEncoding("UTF-8");
