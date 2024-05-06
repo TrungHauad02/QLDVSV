@@ -16,7 +16,7 @@ public class SamesiteHttpServletResponse extends HttpServletResponseWrapper
 	  @Override
 	  public void addCookie(Cookie cookie)
 	  {
-		  String headerValue = String.format("%s=%s; Path=%s; Secure; HttpOnly; SameSite=strict",
+		  String headerValue = String.format("%s=%s; Path=%s; Secure; HttpOnly; SameSite=Strict",
 	              cookie.getName(), cookie.getValue(), cookie.getPath());
 	
 	      addHeader("Set-Cookie", headerValue);

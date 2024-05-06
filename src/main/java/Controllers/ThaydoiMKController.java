@@ -7,12 +7,14 @@ import java.text.ParseException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import DAO.*;
 import Models.TaiKhoan;
+import SameSiteCookie.SamesiteHttpServletResponse;
 
 /**
  * Servlet implementation class ThaydoiMKController
@@ -34,6 +36,13 @@ public class ThaydoiMKController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws  ServletException, IOException {
+		SamesiteHttpServletResponse wrappedResponse = new SamesiteHttpServletResponse(response);
+		Cookie[] cookies = request.getCookies();
+		if(cookies != null) {
+			for (Cookie cookie : cookies) {
+				 wrappedResponse.addCookie(cookie);
+			}
+		}
 		String password = request.getParameter("password");
 		String newpass= request.getParameter("newpassword");
 		HttpSession session = request.getSession();
