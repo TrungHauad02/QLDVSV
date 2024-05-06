@@ -2,6 +2,17 @@
     pageEncoding="UTF-8"%>
 <header>
 <!-- Phần header -->
+
+	<%@ page import="SameSiteCookie.SamesiteHttpServletResponse"%>
+	<%
+		SamesiteHttpServletResponse wrappedResponse = new SamesiteHttpServletResponse(response);
+		Cookie[] cookies = request.getCookies();
+		if(cookies != null) {
+			for (Cookie cookie : cookies) {
+				 wrappedResponse.addCookie(cookie);
+			}
+		}
+	%>
 	<div class="image-container">
 	    <img border="0" src="../img/SPKT.jpg" alt="Ảnh" class="full-width-img">
 	</div>
